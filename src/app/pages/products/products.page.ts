@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { CartService } from '../../services/cart.service';
-import { CartItem } from '../cart/interfaces/cart-item';
 import { Product } from './interfaces/product';
 import { AlertController } from '@ionic/angular';
 

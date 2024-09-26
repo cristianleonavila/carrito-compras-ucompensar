@@ -15,7 +15,6 @@ export class LoginPage implements OnInit {
   email: string = "";
   password: string = "";
 
-  // Initialize Firebase
   app = initializeApp(environment.firebase);
 
   auth = getAuth(this.app);
