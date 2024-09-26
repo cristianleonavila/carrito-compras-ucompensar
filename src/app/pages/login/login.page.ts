@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { initializeApp } from "firebase/app";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, User } from "firebase/auth";
 import { environment } from 'src/environments/environment';
 import { AlertController } from '@ionic/angular'
 import { Router } from '@angular/router';
@@ -20,28 +20,35 @@ export class LoginPage implements OnInit {
 
   auth = getAuth(this.app);
 
-  constructor(private alert: AlertController, private router: Router ) { }
+  constructor( private alert: AlertController, private router: Router ) { }
 
   login () {
     signInWithEmailAndPassword(this.auth, this.email, this.password)
-    .then((userCredential) => {
-      const user = userCredential.user;
-      this.alert.create({
-        header: 'Bienvenido',
-        message: `${userCredential.user.email}`,
-        buttons: [{
-          text: "Aceptar",
-          role: "confirm",
-          handler: () => this.router.navigate(['/home'])
-        }]
-      }).then((el) => {
-        el.present();
-      });
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-    });
+    .then(({ user }) => this.loginSuccess( user ))
+    .catch(error => this.loginError(error));
+  }
+
+  loginSuccess( _user: User) {
+    this.alert.create({
+      header: 'Bienvenido',
+      message: `${_user.email}`,
+      buttons: [{
+        text: "Aceptar",
+        role: "confirm",
+        handler: () => this.router.navigate(['/products'])
+      }]
+    }).then(el => el.present());
+  }
+
+  loginError(error: any) {
+    this.alert.create({
+      header: "Error",
+      message: `Error Code: ${error.code} - ${error.message}`,
+      buttons: [{
+        text: "Aceptar",
+        role: "cancel"
+      }]
+    }).then(el => el.present());
   }
 
   ngOnInit() {
